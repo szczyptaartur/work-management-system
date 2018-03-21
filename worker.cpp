@@ -7,7 +7,7 @@
 #include<string>
 
 using namespace std;
-
+worker p1;
 //oddzielanie rekordow w tabelce
 void dots() {
 	for (int o = 0; o < 79; o++) {
@@ -55,6 +55,7 @@ int worker::open()
 //dodaje rekord do bazy danych
 int worker::insert()
 {
+	create();
 	string a = "Insert into COMPANY (Imie,Nazwisko,Wiek,Stanowisko,Pensja) Values (";
 	cout << "DODAWANIE NOWEGO PRACOWNIKA" << endl << endl;
 	cout << "Wprowadz imie:";
@@ -83,6 +84,94 @@ int worker::insert()
 		fprintf(stdout, "Pracownik dodany!\n");
 		getch();
 	}
+	return 0;
+}
+
+menu gotox,f1;
+
+
+int worker::AgeChange() {
+	
+	//system("cls");
+	gotox.gotoxy(29, 10);
+	cout << "Podaj nowy wiek:";
+	cin >> wiek;
+	sql1 = UpdateQuestion1 + wiek + " where imie=" + g + p1.imie + g + i + "Nazwisko=" + g + p1.nazwisko + g + i + "Wiek=" + p1.wiek1 + ";";		 //sklejenie paru stringow w jeden tworzacy zapytanie
+	sql = new char[sql1.size() + 1];
+	strcpy(sql, sql1.c_str());
+
+
+	/* Execute SQL statement */
+	rc = sqlite3_exec(db, sql, callback, &fHasResult, &zErrMsg);
+	if (rc != SQLITE_OK) {
+		fprintf(stderr, "SQL error: %s\n", zErrMsg);
+		sqlite3_free(zErrMsg);
+		getch();
+	}
+	else {
+		cout << "\n\n\n Wiek zmieniony pomyslnie!";
+		getch();
+	}
+
+	const int n = 5;
+	int (worker::*Functions[n])();
+
+	Functions[0] = &worker::select;
+	Functions[1] = &worker::insert;
+	Functions[2] = &worker::update;
+	Functions[3] = &worker::delet;
+	Functions[4] = &worker::close;
+
+	string *FunctionNames = new string[n];
+	FunctionNames[0] = "Wyswietl pracownikow firmy";
+	FunctionNames[1] = "Dodaj pracownika";
+	FunctionNames[2] = "Zaaktualizuj dane o pracowniku";
+	FunctionNames[3] = "Usun pracownika z firmy";
+	FunctionNames[4] = "Wyjscie";
+
+	f1.menu1(p1, 5, 3, 3, FunctionNames, Functions);
+
+	return 0;
+}
+
+int worker::SalaryChange() {
+	gotox.gotoxy(29, 12);
+	cout << "Podaj nowa pensje:";
+	cin >> pensja;
+	sql1 = UpdateQuestion2 + pensja + " where imie=" + g + p1.imie + g + i + "Nazwisko=" + g + p1.nazwisko + g + i + "Wiek=" + p1.wiek1 + ";";		 //sklejenie paru stringow w jeden tworzacy zapytanie
+	sql = new char[sql1.size() + 1];
+	strcpy(sql, sql1.c_str());
+
+	/* Execute SQL statement */
+	rc = sqlite3_exec(db, sql, callback, &fHasResult, &zErrMsg);
+	if (rc != SQLITE_OK) {
+		fprintf(stderr, "SQL error: %s\n", zErrMsg);
+		sqlite3_free(zErrMsg);
+		getch();
+	}
+	else {
+		fprintf(stdout, "\nWysokosc pensji zmieniona pomyslnie!");
+		getch();
+	}
+
+	const int n = 5;
+	int (worker::*Functions[n])();
+
+	Functions[0] = &worker::select;
+	Functions[1] = &worker::insert;
+	Functions[2] = &worker::update;
+	Functions[3] = &worker::delet;
+	Functions[4] = &worker::close;
+
+	string *FunctionNames = new string[n];
+	FunctionNames[0] = "Wyswietl pracownikow firmy";
+	FunctionNames[1] = "Dodaj pracownika";
+	FunctionNames[2] = "Zaaktualizuj dane o pracowniku";
+	FunctionNames[3] = "Usun pracownika z firmy";
+	FunctionNames[4] = "Wyjscie";
+
+	f1.menu1(p1, 5, 3, 3, FunctionNames, Functions);
+
 	return 0;
 }
 
@@ -124,122 +213,47 @@ int worker::delet()
 	return 0;
 }
 
+
 //aktualizuje rekord w tabeli
 int worker::update() {
-	cout << "Podaj imie, nazwisko oraz wiek pracownika, ktorego dane chcesz zaaktualizowac w podanej kolejnosci \n \n";
-	cin >> imie >> nazwisko >> wiek1;
-	string sql1 = a + g + imie + g + i + "Nazwisko=" + g + nazwisko + g + i + "Wiek=" + wiek1 + ";";		 //sklejenie paru stringow w jeden tworzacy zapytanie
+	cout << "Podaj pracownika, ktorego dane chcesz zaaktualizowac: \n \n";
+	cout << "Imie: ";
+	cin >> p1.imie; 
+	cout << "Nazwisko: ";
+	cin >> p1.nazwisko;
+	cout << "Wiek: ";
+	cin >> p1.wiek1;
+	string sql1 = a + g + p1.imie + g + i + "Nazwisko=" + g + p1.nazwisko + g + i + "Wiek=" + p1.wiek1 + ";";		 //sklejenie paru stringow w jeden tworzacy zapytanie
 	char * sql = new char[sql1.size() + 1];
 	strcpy(sql, sql1.c_str());
-	/* Execute SQL statement */
+	// Execute SQL statement 
 	rc = sqlite3_exec(db, sql, myCallback, &fHasResult, &zErrMsg);		//sprawdza czy pracownik istnieje w bazie
-	if (fHasResult) {		 //jesli istnieje to go "uaktualnia"
-		cout << "\nCo chcesz zmienic?";
-		int wybor;
-		int poprzedniWybor;
-		bool wykonujPetle;
-		menu gotox;
-		while (1)
-		{
-			wybor = 0;
-			poprzedniWybor = wybor;
-			wykonujPetle = true;
-			//rysowanie dwoch opcji
-			int wysokosc = 7;
-			gotox.gotoxy(3, wysokosc);
-			cout << "Wiek";
-			gotox.gotoxy(3, wysokosc+2);
-			cout << "Pensje";
-			//przesuwanie strza³ki
-			while (wykonujPetle)
-			{
-				//rysowanie strza³ki wyboru
-				gotox.gotoxy(1, wybor * 2 + wysokosc);
-				cout << static_cast < char >(16);
+	if (fHasResult) {
+		menu f1;
+		//worker p1;
+		const int n = 2;
+		
+		string *FunctionNames = new string[n];
+		FunctionNames[0] = "Wiek";
+		FunctionNames[1] = "Pensje";
 
-				//obs³uga klawiatury
-				poprzedniWybor = wybor;
-				switch (_getch())
-				{
-				case 224: //STRZA£KI
-					switch (_getch())
-					{
-					case 72: //strza³ka w górê
-						if (0 < wybor) wybor--;
-						else wybor = 1;
-
-						break;
-
-					case 80: //strza³ka w dó³
-						if (wybor < 1) wybor++;
-						else wybor = 0;
-
-						break;
-					}
-					break;
-				case 13: //enter
-						 //je¿eli wciœniêto enter, sprawdŸ wybran¹ opcjê i wykonaj odpowiedni¹ akcjê
-					switch (wybor)
-					{
-						case 0:
-						gotox.gotoxy(1, wybor * 2 + wysokosc+4);
-						cout << "Podaj nowy wiek:";
-						cin >> wiek;
-						sql1 = UpdateQuestion1 +wiek+" where imie=" + g + imie + g + i + "Nazwisko=" + g + nazwisko + g + i + "Wiek=" + wiek1 + ";";		 //sklejenie paru stringow w jeden tworzacy zapytanie
-						sql = new char[sql1.size() + 1];
-						strcpy(sql, sql1.c_str());
-
-						/* Execute SQL statement */
-						rc = sqlite3_exec(db, sql, callback, &fHasResult, &zErrMsg);
-						if (rc != SQLITE_OK) {
-							fprintf(stderr, "SQL error: %s\n", zErrMsg);
-							sqlite3_free(zErrMsg);
-							getch();
-						}
-						else {
-							fprintf(stdout, "\nWiek zmieniony pomyslnie!");
-							getch();
-						}
-						goto end;
-
-					case 1:
-						gotox.gotoxy(1, wybor * 2 + wysokosc + 4);
-						cout << "Podaj nowapensje:";
-						cin >> pensja;
-						sql1 = UpdateQuestion2 + pensja + " where imie=" + g + imie + g + i + "Nazwisko=" + g + nazwisko + g + i + "Wiek=" + wiek1 + ";";		 //sklejenie paru stringow w jeden tworzacy zapytanie
-						cout << sql1;
-						getch();
-						sql = new char[sql1.size() + 1];
-						strcpy(sql, sql1.c_str());
-
-						/* Execute SQL statement */
-						rc = sqlite3_exec(db, sql, callback, &fHasResult, &zErrMsg);
-						if (rc != SQLITE_OK) {
-							fprintf(stderr, "SQL error: %s\n", zErrMsg);
-							sqlite3_free(zErrMsg);
-							getch();
-						}
-						else {
-							fprintf(stdout, "\nWysokosc pensji zmieniona pomyslnie!");
-							getch();
-						}
-						goto end;
-					}
-					break;
-				}
-				//czyszczenie strza³ki wyboru
-				gotox.gotoxy(1, poprzedniWybor * 2 + wysokosc);
-				cout << " ";
-				
-			}
-		}
+		int (worker::*Functions[n])();
+		Functions[0] = &worker::AgeChange;
+		Functions[1] = &worker::SalaryChange;
+		gotox.gotoxy(10,7);
+		cout << "Co chcesz zmienic?";
+		f1.menu1(p1, n, 9,10 , FunctionNames, Functions);
 	}
+
 	else {		//w przypadku braku takiego pracownika
 		cout << "Brak takiego pracownika!";
 		getch();
 	}
-	end:
-	return 0;
+
+
+
+
+		return 0;
 }
 
 
@@ -266,6 +280,7 @@ int worker::select()
 		fprintf(stderr, "Tabela jest pusta!\n", zErrMsg);
 		sqlite3_free(zErrMsg);
 	}
+	_getch();
 	return 0;
 }
 
@@ -273,7 +288,7 @@ int worker::select()
 //zamyka baze danych
 int worker::close() {
 	sqlite3_close(db);
-	return 0;
+	exit(0);
 }
 
 int worker::create() {
@@ -295,3 +310,4 @@ worker::worker()
 worker::~worker()
 {
 }
+

@@ -1,4 +1,13 @@
 #pragma once
+#include <iostream>
+#include "worker.h"
+#include <windows.h>
+#include <conio.h>
+#include <string>
+
+using namespace std;
+
+
 class menu
 {
 
@@ -13,5 +22,6 @@ public:
 
 	void draw();
 	void show();
+	int menu1(worker & p1,int n, int wysokosc, int szerokosc, string FunctionNames[], int(worker::*Functions[])());
 };
 

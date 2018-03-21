@@ -2,6 +2,7 @@
 #include"sqlite3.h"
 #include<string>
 
+
 using namespace std;
 
 class worker
@@ -11,14 +12,18 @@ public:
 	int open();
 	int create();
 	int insert();
+	int AgeChange();
+	int SalaryChange();
 	int delet();
 	int update();
-	int select();
+	int select();                             
 	int close();
+	//int(*Functions[4])();
+
 	worker();
 	~worker();
 
-private:
+	int wybor, wysokosc;
 	string imie, nazwisko, stanowisko, wiek,wiek1, pensja;
 	string p = ",";
 	string k = ");";
@@ -34,5 +39,8 @@ private:
 	int fHasResult = 0;
 	int rc;
 	char *sql;
+
+	string *FunctionNames = new string[5];
+
 };
 
