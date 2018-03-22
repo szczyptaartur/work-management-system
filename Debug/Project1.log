@@ -1,5 +1,4 @@
-﻿  worker.cpp
-c:\users\artur\source\repos\project1\project1\worker.cpp(280): warning C4474: 'fprintf' : too many arguments passed for format string
-  c:\users\artur\source\repos\project1\project1\worker.cpp(280): note: placeholders and their parameters expect 0 variadic arguments, but 1 were provided
-c:\users\artur\source\repos\project1\project1\worker.cpp(52): warning C4715: 'worker::open': not all control paths return a value
+﻿  menu.cpp
+c:\users\artur\source\repos\project1\project1\menu.cpp(14): warning C4838: conversion from 'const int' to 'SHORT' requires a narrowing conversion
+c:\users\artur\source\repos\project1\project1\menu.cpp(54): warning C4309: 'static_cast': truncation of constant value
   Project1.vcxproj -> C:\Users\Artur\source\repos\Project1\Debug\Project1.exe

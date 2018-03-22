@@ -13,6 +13,7 @@ int main(int argc, char* argv[])
 
 	menu f1;
 	worker p1;
+	f1.HideCursor(); //hidding cursor
 	const int n = 5;
 	string *FunctionNames = new string[n];
 	FunctionNames[0] = "Wyswietl pracownikow firmy";

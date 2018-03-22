@@ -23,7 +23,7 @@ public:
 	worker();
 	~worker();
 
-	int wybor, wysokosc;
+	//int wybor, wysokosc;
 	string imie, nazwisko, stanowisko, wiek,wiek1, pensja;
 	string p = ",";
 	string k = ");";

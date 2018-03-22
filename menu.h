@@ -15,13 +15,8 @@ public:
 	int wybor;
 	int poprzedniWybor;
 	bool wykonujPetle;
-
 	void gotoxy(const int x, const int y);
-
 	void HideCursor();
-
-	void draw();
-	void show();
 	int menu1(worker & p1,int n, int wysokosc, int szerokosc, string FunctionNames[], int(worker::*Functions[])());
 };
 
